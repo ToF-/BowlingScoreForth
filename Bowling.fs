@@ -1,25 +1,23 @@
 ( Bowling.fs )
-
-0 constant normal
-2 constant strike
  
-: bonus ( r,f -- n )
-    if 
-        10 = if strike else normal then
-    else 
-        drop normal 
-    then ;
-        
+: 1st-roll ( s r -- s f)
+    dup 10 = -rot 
+    +        swap ;
 
-: bonus_should_be_0_when_first_roll_and_not_strike
-    4 true 
-    bonus assert( 0= ) ;
+: 1st-roll-is-added-to-score
+    48                  ( current score ) 
+    4 1st-roll 
+    drop                ( end-frame )
+    assert( 52 = ) ;
 
-: bonus_should_be_2_when_first_roll_and_strike
-    10 true
-    bonus assert( 2 = ) ;
+: 1st-roll-end-frames-if-a-strike
+    0 ( current score )
+    10 1st-roll
+    assert(  ) ;
 
-bonus_should_be_0_when_first_roll_and_not_strike
-bonus_should_be_2_when_first_roll_and_strike
+
+ 
+1st-roll-is-added-to-score
+1st-roll-end-frames-if-a-strike
 
 bye
