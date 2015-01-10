@@ -1,33 +1,38 @@
-score last bonus frame newframe
-start 	==> 		0		-1		0		0 true
 
-4 roll		==>		4		4		0		0 false
-5 roll 	==>		9		5		0		1 true
+previous roll            : factor
+0: normal                : 1
+2: spare / strike+normal : 2
+3: strike                : 2
+4: double strike         : 3
 
-3 roll 	==>		12	3		0		1 false
-7 roll 	==>		19	7		1		2 true
-
-2 roll		==>		23	2		0		2 false
-6 roll 	==>		29	6		0		3 true
-
-10 roll 	==>		39 	10	2		4 true
-
-5 roll		==>		49	5		1		4 false
-5 roll		==>		59	5		1		5 true
-
-10 roll ==>		79 	10	2		6 true
-
-10 roll ==>		99	10	2		7 true
-
-3 roll		==>		105	3		1		7 false
-7 roll		==>		119	7		1		8 true
-
-10 roll ==>		139	10	2		9 true
-
-10 roll ==>		159  10	2		10 true
-
-5 roll 	==>		164	5		1		10 false
-4 roll 	==>		168	4		0		10 false
-		
+: factor 2 / 1+ ;
 
 
+previous roll            : rollst: next status
+0: normal                : normal: normal
+0: normal                : spare : spare / strike + normal 
+0: normal                : strike: strike
+1: spare / strike+normal : normal: normal
+1: spare / strike+normal : spare : IMPOSSIBLE
+1: spare / strike+normal : strike: strike
+2: strike                : normal: strike+normal
+2: strike                : spare : IMPOSSIBLE
+2: strike                : strike: double strike
+3: double strike         : normal: strike+normal
+3: double strike         : spare : IMPOSSIBLE
+3: double strike         : strike: double strike
+
+1st roll : last : roll : rollst
+  1         x      10  : strike
+  1         x     <10  : normal
+  0         x      y   | x+y == 10 : spare
+  0         x      y   | x+y < 10  : normal
+
+
+    
+
+
+
+
+
+ 
