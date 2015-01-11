@@ -30,6 +30,12 @@ s" Bowling.fs" included
     double normal assert( new-status strike = )
     double strike assert( new-status double = )
 
+( encode should encode frame, status and last roll in one value )
+    1 1 1 encode assert( 256 16 1 + +  = )
+    1 2 9 encode assert( 256 32 9 + +  = )
+
+( decode should decode frame, status and last roll from one value )
+    256 32 9 + + decode assert( 9 = swap 2 = and swap 1 = and )
 ;
 tests .s
 

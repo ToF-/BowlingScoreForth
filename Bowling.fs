@@ -16,7 +16,7 @@ create statuses ( normal    spare   strike  )
  ( double )         strike ,  n-a   , double ,
 
 
-: qualify ( last roll or 10, roll -- status )
+: qualify ( last roll or 10, roll -- quality )
     + dup 20 = if drop strike 
      else 10 = if spare
      else normal then then ;
@@ -28,6 +28,16 @@ create statuses ( normal    spare   strike  )
     swap factor * + ;
 
 : new-status ( status,quality -- status )
-    swap 3 cells *
-    swap cells + statuses + @ ;
+    cells swap
+    3 cells * + 
+    statuses + @ ;
 
+: encode ( frame, status, last roll -- code )
+    swap 4 lshift or
+    swap 8 lshift or ;
+
+: decode ( code -- frame,status,last roll )
+    dup 8 rshift ( code, frame )
+    over 4 rshift 15 and ( code, frame, status )
+    rot  15 and ; ( frame, status, last roll )
+    
