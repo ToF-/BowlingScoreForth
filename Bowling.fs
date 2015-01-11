@@ -1,7 +1,7 @@
 ( Bowling.fs )
 
 0 constant usual0
-1 constant bonus1
+1 constant bonus1  
 2 constant boni11
 3 constant boni21
 
@@ -19,31 +19,28 @@ create bonuses   ( usual0   bonus1   boni11   boni21 )
 : status-offset  ( bonus  -- col-offset )
     cells ;
 
-: new-bonus ( bonus,quality -- bonus )
+: update-bonus ( bonus,quality -- bonus )
     quality-offset swap 
     status-offset + bonuses + @ ;
 
-: get-bonus ( status -- bonus ) 
-    5 rshift 3 and ;
+1 4 lshift constant -in-frame
 
-: set-bonus ( bonus,status -- status )
-    swap 5 lshift or ;
-
-: get-frame ( status -- frame )
-    15 and ;
-
-: set-frame ( frame,status -- status )
-    or ;
+: not -1 xor ;
 
 : in-frame? ( status -- flag )
-    16 and ;
+    -in-frame and ;
 
 : end-frame ( status -- status )
-    239 and ;
+    -in-frame not and ;
 
 : in-frame ( status -- status )
-    16 or ;
+    -in-frame or ;
 
+: frame ( status -- n )
+    15 and ;
 
+: frame++ ( status -- status )
+    dup frame 1+ swap 15 not and or ;    
 
-    
+: next-frame ( status -- status )
+    end-frame frame++ ;

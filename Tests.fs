@@ -2,22 +2,23 @@ s" Bowling.fs" included
 
 : tests
 
-( new-bonus should determine new status from previous status and roll quality )
-    usual0 normal assert( new-bonus usual0 = ) 
-    boni11 strike assert( new-bonus boni21 = )
-    boni21 strike assert( new-bonus boni21 = )
-    bonus1 normal assert( new-bonus usual0 = )
+( update-bonus should determine new status from previous status and roll quality )
+    usual0 normal assert( update-bonus usual0 = ) 
+    boni11 strike assert( update-bonus boni21 = )
+    boni21 strike assert( update-bonus boni21 = )
+    bonus1 normal assert( update-bonus usual0 = )
 
-( set-bonus and get-bonus should store and retrieve bonus info )
-    boni21 0 set-bonus assert( get-bonus boni21 = )
+( in-frame? should be determined from status )
+    0 assert( in-frame? 0= )
+    255 end-frame assert( in-frame? 0= ) 
+    0 in-frame assert( in-frame? )
 
-( set-frame and get-frame should store and retrieve frame number )
-    7 0 set-frame assert( get-frame 7 = )
+( frame should keep track of frame number )
+    24 assert( frame 8 = )
+    24 frame++ assert( frame 9 = )
 
-( in-frame? end-frame and in-frame should keep in-frame status )
-    7 0 set-frame boni21 swap set-bonus
-    dup in-frame  assert( in-frame? ) 
-    end-frame assert( in-frame? 0 = ) 
+    0 next-frame assert( in-frame? 0= )
+    0 next-frame assert( frame 1 = )
     
 
 ;
