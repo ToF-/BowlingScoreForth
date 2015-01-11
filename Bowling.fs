@@ -1,43 +1,25 @@
 ( Bowling.fs )
 
- 
--1 constant n-a
+0 constant usual0
+1 constant bonus1
+2 constant boni11
+3 constant boni21
+
 0 constant normal
 1 constant spare
 2 constant strike
-3 constant double
 
-create factors 1 , 2 , 2 , 3 , 
+create statuses  ( usual0   bonus1   boni11   boni21 )
+     ( normal )    usual0 , usual0 , bonus1 , bonus1 ,
+     ( spare  )    bonus1 , bonus1 , bonus1 , bonus1 ,
+     ( strike )    boni11 , boni11 , boni21 , boni21 ,
 
-create statuses ( normal    spare   strike  )
- ( normal )         normal ,  spare , strike , 
- ( spare  )         normal ,  n-a   , strike , 
- ( strike )         normal ,  n-a   , double , 
- ( double )         strike ,  n-a   , double ,
-
-
-: qualify ( last roll or 10, roll -- quality )
-    + dup 20 = if drop strike 
-     else 10 = if spare
-     else normal then then ;
-
-: factor ( status -- factor )
-    factors swap cells + @ ;
-
-: score ( score,status,roll -- score )
-    swap factor * + ;
+: quality-offset ( quality -- line-offset )
+    4 cells * ;
+: status-offset  ( status  -- col-offset )
+    cells ;
 
 : new-status ( status,quality -- status )
-    cells swap
-    3 cells * + 
-    statuses + @ ;
-
-: encode ( frame, status, last roll -- code )
-    swap 4 lshift or
-    swap 8 lshift or ;
-
-: decode ( code -- frame,status,last roll )
-    dup 8 rshift ( code, frame )
-    over 4 rshift 15 and ( code, frame, status )
-    rot  15 and ; ( frame, status, last roll )
+    quality-offset swap 
+    status-offset + statuses + @ ;
     
