@@ -24,7 +24,7 @@ create statuses ( normal    spare   strike  )
 : factor ( status -- factor )
     factors swap cells + @ ;
 
-: score ( score,quality,roll -- score )
+: score ( score,status,roll -- score )
     swap factor * + ;
 
 : new-status ( status,quality -- status )
