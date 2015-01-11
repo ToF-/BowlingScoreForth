@@ -1,4 +1,5 @@
 
+<<<<<<< Updated upstream
 previous roll            : factor
 0: normal                : 1
 2: spare / strike+normal : 2
@@ -33,6 +34,14 @@ previous roll            : rollst: next status
 
 
 
+=======
+the bowling state includes:
+- frame number
+- last roll or 10 if the frame is complete
+- bonus 
 
+>>>>>>> Stashed changes
+
+0 0 0 0
 
  

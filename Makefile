@@ -1,2 +1,2 @@
-test : Bowling.fs
-	gforth Bowling.fs
+test : Bowling.fs Tests.fs
+	gforth Tests.fs -e bye
