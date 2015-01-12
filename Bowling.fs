@@ -70,14 +70,25 @@ create bonuses   ( usual0   bonus1   boni11   boni21 )
 : update-bonus ( bonus,status -- bonus )
     255 and swap 8 lshift or ;
 
-: factor ( bonus -- n )
+: bonus-factor ( bonus -- n )
     dup  boni21 = if drop 3 
     else usual0 = if 1
     else 2 then then ;
 
-: roll-score ( status -- n )
-    dup bonus factor 
+: factor ( status -- n )
+    dup bonus bonus-factor 
     swap frame 10 >= if 1- then ;
+
+: roll-score ( status,roll -- n )
+    swap factor * ;
+
+: add-score ( score,status,roll -- score )
+    roll-score + ;
+
+: update-status ( status,roll -- status )
+    over swap qualify 
+    over bonus swap next-bonus 
+    swap update-bonus ;
 
         
 

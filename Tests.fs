@@ -34,16 +34,25 @@ s" Bowling.fs" included
     boni21 0 update-bonus assert( bonus boni21 = ) 
 
 ( factor calculate factor according to bonus situation and frame count)
-    usual0 factor assert( 1 = )
-    bonus1 factor assert( 2 = )
-    boni11 factor assert( 2 = )
-    boni21 factor assert( 3 = )
+    usual0 bonus-factor assert( 1 = )
+    bonus1 bonus-factor assert( 2 = )
+    boni11 bonus-factor assert( 2 = )
+    boni21 bonus-factor assert( 3 = )
 
-( roll-score given the bonus situation and frame number )
-    boni21 0 update-bonus roll-score assert( 3 = )
+( bonus-factor given the bonus situation and frame number )
+    boni21 0 update-bonus factor assert( 3 = )
     0 10 0 do frame++ loop
-    boni21 swap update-bonus roll-score assert( 2 = ) 
+    boni21 swap update-bonus factor assert( 2 = ) 
 
+( roll-score calculate score for the roll )
+    bonus1 0 update-bonus 10 roll-score assert( 20 = )
+    boni21 0 update-bonus 7 roll-score assert( 21 = )
+
+( add-score update score with a roll )
+    100 boni21 0 update-bonus 7 add-score assert( 121 = )
+
+( update-status set new bonus situation according to quality )
+    0 10 update-status assert( bonus boni11 = )   
 ;
 tests .s
 
