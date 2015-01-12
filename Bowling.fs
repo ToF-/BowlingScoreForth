@@ -21,7 +21,7 @@ create bonuses   ( usual0   bonus1   boni11   boni21 )
 : status-offset  ( bonus  -- col-offset )
     cells ;
 
-: update-bonus ( bonus,quality -- bonus )
+: next-bonus ( bonus,quality -- bonus )
     quality-offset swap 
     status-offset + bonuses + @ ;
 
@@ -64,4 +64,21 @@ create bonuses   ( usual0   bonus1   boni11   boni21 )
     swap dup
     in-frame? if qualify-second else qualify-first then ;
 
+: bonus ( status -- bonus )
+    8 rshift 3 and ;
+
+: update-bonus ( bonus,status -- bonus )
+    255 and swap 8 lshift or ;
+
+: factor ( bonus -- n )
+    dup  boni21 = if drop 3 
+    else usual0 = if 1
+    else 2 then then ;
+
+: roll-score ( status -- n )
+    dup bonus factor 
+    swap frame 10 >= if 1- then ;
+
         
+
+
