@@ -67,9 +67,10 @@ s" Bowling.fs" included
     start-game 10 add-roll
                3  add-roll
                6  add-roll assert( bonus usual0 = swap 28 = and )
-    start-game 10 add-roll
-               10 add-roll
-               10 add-roll .s 
+    
+    start-game 12 0 do 10 add-roll loop
+    drop
+            assert(  300 = )
 ;
 tests .s
 

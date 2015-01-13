@@ -100,8 +100,7 @@ create bonuses   ( usual0   bonus1   boni11   boni21 )
     over >r    ( score,status,roll | roll,status )
     add-score
     r> r> 
-    update-status 
-    frame++ ; ( score,status )
+    update-status  ;
 
 : start-game ( -- score,status )
     initial-score
