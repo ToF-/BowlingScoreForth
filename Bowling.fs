@@ -10,6 +10,9 @@
 2 constant spare
 3 constant strike
 
+0 constant initial-status
+0 constant initial-score
+
 create bonuses   ( usual0   bonus1   boni11   boni21 )
      ( half   )    usual0 , usual0 , bonus1 , bonus1 ,
      ( normal )    usual0 , usual0 , bonus1 , bonus1 ,
@@ -86,10 +89,21 @@ create bonuses   ( usual0   bonus1   boni11   boni21 )
     roll-score + ;
 
 : update-status ( status,roll -- status )
-    over swap qualify 
-    over bonus swap next-bonus 
+    over swap qualify
+    swap over 
+    half <> if frame++ then 
+    swap over bonus swap next-bonus 
     swap update-bonus ;
 
-        
+: add-roll ( score,status,roll -- score,status )
+    dup >r     ( score,status,roll | roll )
+    over >r    ( score,status,roll | roll,status )
+    add-score
+    r> r> 
+    update-status 
+    frame++ ; ( score,status )
 
+: start-game ( -- score,status )
+    initial-score
+    initial-status ;
 

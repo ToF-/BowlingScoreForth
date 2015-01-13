@@ -51,8 +51,25 @@ s" Bowling.fs" included
 ( add-score update score with a roll )
     100 boni21 0 update-bonus 7 add-score assert( 121 = )
 
+( add-roll update frame if not in-frame )
+    0 10 update-status assert( frame 1 = ) 
+    0 5  update-status assert( frame 0 = )
+
 ( update-status set new bonus situation according to quality )
     0 10 update-status assert( bonus boni11 = )   
+
+( add-roll update score, bonus and frame ) 
+    start-game 5 add-roll assert( bonus usual0 = swap 5 = and ) 
+    start-game 10 add-roll assert( bonus boni11 = swap 10 = and ) 
+    start-game 10 add-roll
+               3  add-roll assert( bonus bonus1 = swap 16 = and )
+
+    start-game 10 add-roll
+               3  add-roll
+               6  add-roll assert( bonus usual0 = swap 28 = and )
+    start-game 10 add-roll
+               10 add-roll
+               10 add-roll .s 
 ;
 tests .s
 
