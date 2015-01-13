@@ -106,3 +106,17 @@ create bonuses   ( usual0   bonus1   boni11   boni21 )
     initial-score
     initial-status ;
 
+: show-bonus ( bonus -- )
+    dup usual0 = if ." usual0" else
+    dup bonus1 = if ." bonus1" else
+    dup boni11 = if ." boni11" else
+    dup boni21 = if ." boni21" else
+    then then then then ;
+    
+
+: show ( score,status )
+    swap ." score: " . cr
+    dup  ." frame: " frame . cr
+    dup  ." bonus: " bonus show-bonus cr
+         ." in-fr: " in-frame 4 rshift . cr ;
+
