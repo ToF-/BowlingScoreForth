@@ -1,47 +1,73 @@
+In order to calculate the score of a game just after a roll, you need to know:
 
-<<<<<<< Updated upstream
-previous roll            : factor
-0: normal                : 1
-2: spare / strike+normal : 2
-3: strike                : 2
-4: double strike         : 3
+* the current score,
+* the bonus situation,
+* the frame number,
+* the last roll or an info that the frame is complete. 
 
-: factor 2 / 1+ ;
+Then there are 6 steps for each roll:
 
+###1 calculate the new score value, using the bonus situation, the frame number and the roll value
 
-previous roll            : rollst: next status
-0: normal                : normal: normal
-0: normal                : spare : spare / strike + normal 
-0: normal                : strike: strike
-1: spare / strike+normal : normal: normal
-1: spare / strike+normal : spare : IMPOSSIBLE
-1: spare / strike+normal : strike: strike
-2: strike                : normal: strike+normal
-2: strike                : spare : IMPOSSIBLE
-2: strike                : strike: double strike
-3: double strike         : normal: strike+normal
-3: double strike         : spare : IMPOSSIBLE
-3: double strike         : strike: double strike
+Possible bonus situations:
 
-1st roll : last : roll : rollst
-  1         x      10  : strike
-  1         x     <10  : normal
-  0         x      y   | x+y == 10 : spare
-  0         x      y   | x+y < 10  : normal
+* B0 : there is no bonus
+* B1 : there's a bonus of 1 (this just after a spare has been played, or 2 rolls after a strike has been played )
+* B11: there's a bonus of 1 for this roll, and 1 for the next roll (this is just after a strike has been played)
+* B21: there's a bonus of 2 for this roll, and 1 for the next roll (this is just after two strikes has been played)
 
+The bonus factor are:
 
-    
+* B0 : 0
+* B1 : 1
+* B11: 1
+* B21: 2
 
-
-
-=======
-the bowling state includes:
-- frame number
-- last roll or 10 if the frame is complete
-- bonus 
-
->>>>>>> Stashed changes
-
-0 0 0 0
-
+After the last frame (10), rolls that are played are added only in case of bonus, they don't count by themselves.
+Thus if the frame is < 10, the value added to the score is : (bonus factor + 1) x roll value  
+in the other case it is : bonus factor x roll value
  
+###2 determine the quality of the roll, depending on the last roll played
+
+If last roll is -1, the last roll was ending a frame
+
+If last roll is different, the last roll should be add to this roll.
+
+  | Tables   |      Are      |  Cool |
+  |----------|:-------------:|------:|
+  | col 1 is |  left-aligned | $1600 |
+  | col 2 is |    centered   |   $12 |
+  | col 3 is | right-aligned |    $1 |
+
+  |Last Roll|Roll|Quality|
+  |---------|----|-------|
+  -1         10    Strike
+  -1         <10   Half 
+  x         10-x   Spare
+  x           y    Normal
+
+###3 determine the new bonus situation, given the current situation, and the quality of the roll
+
+Situation   Quality           New situation
+B0 or B1    Half or Normal       B0
+B0 or B1    Strike               B11
+B11 or B21  Half                 B1     (it's not possible to have a spare or a normal frame, in one roll just after a strike) 
+B11 or B21  Strike               B21 
+            
+this can be codified into a transition table:
+
+Situation  Half   Normal   Spare  Strike
+  B0        B0      B0      B1     B11
+  B1        B0      B0      B1     B11
+  B11       B1      --      --     B21
+  B21       B1      --      --     B21 
+
+###4 update the last roll information
+if the quality of the roll is a Half, the last roll value is replaced with the roll value, in other cases it's replaced with a flag -1
+
+###5 increment the frame count
+
+
+
+
+
