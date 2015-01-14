@@ -43,10 +43,8 @@
  
 : add-roll ( score,status,roll -- ~score,~status ) 
     >r 
-    bonus? r@ factor
-    score+ 
-    last-roll? r@
-    spare? bonus! 
+    bonus? r@ factor     score+ 
+    last-roll? r@ spare? bonus! 
     r> last-roll! ;
 
 
