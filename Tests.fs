@@ -2,63 +2,42 @@ s" Bowling.fs" included
 
 : tests
 
-( start-game should push a score of 0 )
-    start-game assert( score? 0= ) 
-    end-game
+( after start-game score should be 0 )
+start-game assert( score @ 0 = )
 
-( start-game should not have a bonus ) 
-    start-game assert( bonus? 0= )
-    end-game
+( update-score calculates new score depending on roll, bonus and frame )
+    start-game B00 bonus !  3 add-roll assert( score @ 3 = )
+    start-game B10 bonus !  4 add-roll assert( score @ 8 = )
+    start-game B11 bonus !  5 add-roll assert( score @ 10 = )
+    start-game B21 bonus !  6 add-roll assert( score @ 18 = )
 
-( score? should extract score )
-    start-game 123 score+
-    assert( score? 123 = )
-    end-game
+( quality depends on last-roll and roll )
+    start-game 
+    end-frame last-roll ! 5  assert( quality half = ) 
+    end-frame last-roll ! 10 assert( quality strike = ) 
+    5 last-roll ! 5  assert( quality spare = ) 
+    5 last-roll ! 3  assert( quality normal = ) 
+    0 last-roll ! 10 assert( quality spare = ) 
 
-( last-roll? should extract last roll )
-    start-game 7 last-roll! assert( last-roll? 7 = )
-    end-game
+( new bonus depends on bonus and quality )
+    start-game  B00 bonus !  3 add-roll  assert( bonus @ B00 = )
+    start-game  B10 bonus !  3 add-roll  assert( bonus @ B00 = )
+    start-game  B00 bonus ! 10 add-roll  assert( bonus @ B11 = )
+    start-game  B21 bonus !  0 add-roll  assert( bonus @ B10 = )
+    start-game  B21 bonus ! 10 add-roll  assert( bonus @ B21 = )
 
-( score+ should update score )
-    start-game 12 score+ 
-    assert( score? 12 = )
-    end-game
+( add-roll update frame depending on quality )
+    start-game 4  add-roll assert( frame @ 0 = )
+               4  add-roll assert( frame @ 1 = )
+               10 add-roll assert( frame @ 2 = )
+               3  add-roll assert( frame @ 2 = )
+               7  add-roll assert( frame @ 3 = ) 
 
-( bonus! should update bonus )
-    start-game 1 bonus! assert( bonus? 1 = )
-    end-game
+( after 10th frame, rolls dont count as score and no more bonus )
+    start-game 10 frame ! B21 bonus ! 5 add-roll assert( score @ 5 = )
 
-( last-roll! should update last roll )
-    start-game 4 last-roll! assert( last-roll? 4 = )
-    end-game
-
-( updates should presever states )
-    start-game 4 last-roll! 6 score+ 1 bonus! 
-    assert( last-roll? 4 = )
-    assert( score? 6 = )
-    assert( bonus? 1 = )
-    end-game
-
-( add-roll should update score )
-    start-game 5 add-roll assert( score? 5 = ) 
-    end-game
-
-( add-roll should update last-roll )
-    start-game 5 add-roll 2 add-roll assert( last-roll? 2 = )
-    end-game
-
-( add-roll should update bonus according to spare )
-    start-game 5 add-roll assert( bonus? 0= )
-    5 add-roll assert( bonus? )
-    4 add-roll 3 add-roll assert( bonus? 0= )
-    end-game
-
-( add-roll should add roll twice after a spare )
-    start-game 5 add-roll 5 add-roll 
-    3 add-roll assert( score? 16 = )
-    end-game
-
-;
-
+( a perfect )
+    start-game 12 0 do 10 add-roll loop assert( score @ 300 =  )
+ ;
 tests
 .s

@@ -5,7 +5,7 @@ In order to calculate the score of a game just after a roll, you need to know:
 * the frame number,
 * the last roll or an info that the frame is complete. 
 
-Then there are 6 steps for each roll:
+Then there are 5 steps for each roll:
 
 ###1 calculate the new score value, using the bonus situation, the frame number and the roll value
 
@@ -29,9 +29,9 @@ in the other case it is : bonus factor x roll value.
  
 ###2 determine the quality of the roll, depending on the last roll played
 
-If last roll is -1, the last roll was ending a frame
+If the last roll was ending a frame (second roll, or strike) then that value should be -1.  
 
-If last roll is different, the last roll should be add to this roll.
+If last roll is not -1, then we are in a frame, and the last roll should be added to this roll.
 
 
     Last Roll Roll Quality 
