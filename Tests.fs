@@ -63,6 +63,7 @@ start-game assert( score @ 0 equals )
 ( spares )
     start-game 10 0 do 5 add-roll 5 add-roll loop 5 add-roll
     assert( score @ 150 equals )
+
 ( a random test )
     
  ;

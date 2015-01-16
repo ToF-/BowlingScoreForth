@@ -23,11 +23,12 @@ create factors
 ( B11 )  1 ,
 ( B21 )  2 ,
 
-create next-bonus  ( half   normal   spare   strike  )
-  ( B00 )            B00 ,  B00 ,  B10 , B11 ,
-  ( B10 )            B00 ,  B00 ,  B10 , B11 ,
-  ( B11 )            B10 ,   -1 ,   -1 , B21 ,
-  ( B21 )            B10 ,   -1 ,   -1 , B21 ,
+create next-bonus 
+           ( half  normal spare strike )
+  ( B00 )    B00 , B00 ,  B10 , B11 ,
+  ( B10 )    B00 , B00 ,  B10 , B11 ,
+  ( B11 )    B10 ,  -1 ,   -1 , B21 ,
+  ( B21 )    B10 ,  -1 ,   -1 , B21 ,
 
 : start-game
     0 score ! 
@@ -35,23 +36,55 @@ create next-bonus  ( half   normal   spare   strike  )
     B00 bonus !
     end-frame last-roll ! ;
 
+: in-game 
+    frame @ 10 < ;
+
 : frame-factor ( n -- n ) 
-    frame @ 10 < if 1+ then ;
+    in-game if 1+ then ;
 
 : update-score ( n -- )
     factors bonus @ cells + @
-    frame-factor * score +! ; 
+    in-game if 1+ then 
+    * score +! ; 
 
-: quality ( n -- )
-    last-roll @ end-frame = if 
-        10   = if strike else half then
+: new-frame 
+    last-roll @ end-frame = ;
+
+: all-down ( n -- f )
+    10 = ;
+
+: 1st-roll ( n -- q )
+    all-down if 
+        strike 
+    else 
+        half
+    then ;
+
+: 2nd-roll ( n -- q )
+    last-roll @ +
+    all-down if 
+        spare
     else
-        last-roll @ + 10 = if spare else normal then
-    then 
-    frame @ 9 > if drop half then ;
+        normal
+    then ; 
+
+: qualify-roll ( n -- q )
+    new-frame if 1st-roll else 2nd-roll then ;
+
+: quality ( n -- q )
+    in-game if qualify-roll else drop half then ;
+
+: bonus-row ( b -- offset )
+    4 cells * + ;
+
+: quality-col ( offset,q -- offset )
+    cells ;
 
 : update-bonus ( q -- )
-    next-bonus bonus @ 4 cells * + swap cells + @ bonus ! ;
+    quality-col
+    bonus @ bonus-row 
+    next-bonus +
+    @ bonus ! ;
 
 : update-frame ( n,q -- )
     half <> if 1 frame +! 
@@ -64,11 +97,10 @@ create next-bonus  ( half   normal   spare   strike  )
     last-roll ! ;
 
 : add-roll ( n -- )
-    dup dup update-score
-            quality
+    dup update-score
+    dup quality
     dup update-bonus 
-    update-frame 
-;
+    update-frame ;
 
 
 
