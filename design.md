@@ -1,68 +1,62 @@
-In order to calculate the score of a game just after a roll, you need to know:
-
+In order to calculate the score of a game just after a roll, you need to know:  
 * the current score,
 * the bonus situation,
 * the frame number,
 * the last roll or an info that the frame is complete. 
 
-Then there are 5 steps for each roll:
+Then there are 5 steps for each roll.  
 
-###1 calculate the new score value, using the bonus situation, the frame number and the roll value
+###1 calculate the new score value
+Using the bonus situation, the frame number and the roll value.
 
-Possible bonus situations:
+Possible bonus situations:  
+* B00 : there is no bonus to add to the score, as the previous roll was not a *spare* or a *strike*.
+* B10 : the roll should be added once, as the previous roll was a *spare* or the roll before was a *strike*
+* B11 : the roll should be added once, and the next roll should too, as the previous roll was a *srtike* 
+* B21 : the roll should be added twice, and the next roll will be added once, as the previous roll was a *double* 
 
-* B0 : there is no bonus
-* B1 : there's a bonus of 1 (this just after a spare has been played, or 2 rolls after a strike has been played )
-* B11: there's a bonus of 1 for this roll, and 1 for the next roll (this is just after a strike has been played)
-* B21: there's a bonus of 2 for this roll, and 1 for the next roll (this is just after two strikes has been played)
+After each roll, until the tenth frame is played, the roll is added to the score, then the bonus are added according to the bonus situation. After the tenth frame has been played, the rolls that come are added only as bonus rolls.  
 
-The bonus factor are:
+###2 determine the type of the roll 
+Depending on the last roll played, there are 4 different nature of rolls:  
+* 1st roll : the roll knocked 0 to 9 pins, it was the first ball in the frame  
+* strike : the roll knocked 10 pins, it was the first roll in the frame
+* 2nd roll : the roll completes the frame, and the two rolls added make less than ten
+* spare : the roll completes the frame, and the two rolls added make 10  
 
-* B0 : 0
-* B1 : 1
-* B11: 1
-* B21: 2
+Thus the type of the roll is determined:
 
-After the last frame (10), rolls that are played are added only in case of bonus, they don't count by themselves.  
-Thus if the frame is < 10, the value added to the score is : (bonus factor + 1) x roll value.      
-in the other case it is : bonus factor x roll value.  
- 
-###2 determine the quality of the roll, depending on the last roll played
+    last | roll || type
+    -----+------++---------
+     n-a | 10   || strike
+     n-a | < 10 || 1st roll
+      x  | 10-x || spare
+      x  |<10-x || 2nd roll
+   
+###3 determine the new bonus situation
+Given the current bonus situation, and the type of roll just played, the bonus status evolves (e.g a strike at the frame before now adds only one roll).
+Also, after the tenth frame is played, bonus rolls don't make new bonus.
 
-If the last roll was ending a frame (second roll, or strike) then that value should be -1.  
+    status     | type     || new status
+    B00 or B10 | 1st roll ||   B00
+    B00 or B10 | 2nd roll ||   B00
+    B00 or B10 | spare    ||   B10
+    B00 or B10 | strike   ||   B11
+    B11 or B21 | 1st roll ||   B10
+    B11 or B21 | strike   ||   B21
 
-If last roll is not -1, then we are in a frame, and the last roll should be added to this roll.
+(It is not possible to make a spare or a 2nd roll just after a strike or a double)
+If the tenth frame has been played then the status evolves according to this table: 
 
+    status     || new status
+    B00 or B10 ||   B00
+    B11 or B21 ||   B10
 
-    Last Roll Roll Quality 
-    -1         10    Strike
-    -1         <10   Half 
-    x         10-x   Spare
-    x           y    Normal
-
-
-###3 determine the new bonus situation, given the current situation, and the quality of the roll
-
-    Situation   Quality           New situation
-    B0 or B1    Half or Normal       B0
-    B0 or B1    Strike               B11
-    B11 or B21  Half                 B1     (it's not possible to have a spare or a normal frame, in one roll just after a strike) 
-    B11 or B21  Strike               B21 
-            
-this can be codified into a transition table:
-
-    Situation  Half   Normal   Spare  Strike
-      B0        B0      B0      B1     B11
-      B1        B0      B0      B1     B11
-      B11       B1      --      --     B21
-      B21       B1      --      --     B21 
+That is, only the bonus made on previous rolls are counted.
 
 ###4 update the last roll information
-if the quality of the roll is a Half, the last roll value is replaced with the roll value, in other cases it's replaced with a flag -1
+If the roll is the first in a frame, then its value is to be memorized, otherwise, it's discarded.
 
 ###5 increment the frame count
-
-
-
-
+If the roll type is other than a 1st roll, and the frame number is not ten, then the frame is incremented.
 
