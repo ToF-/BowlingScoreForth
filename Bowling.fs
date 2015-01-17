@@ -1,72 +1,32 @@
 ( Bowling.fs )
 
-0 constant first
-1 constant second
-2 constant spare
-3 constant strike 
+: start-game ( -- st,sc )
+    0 0 ;
 
--1 constant end-frame
-
-variable score
-variable bonus
-variable frame
-variable last-roll
-
-: bonus-factor ( n -- n )
+: bonus ( st -- b )
     3 and ;
 
-: start-game
-    0 score !
-    0 bonus !
-    0 frame !  end-frame last-roll ! ;
+: frame ( st -- fr )
+    4 rshift 15 and ; 
 
-: in-game ( -- f )
-    frame @ 10 < ;
+: not ( n -- n ) 
+    -1 xor ;
 
-: update-score ( n -- )
-    bonus @ bonus-factor 
-    in-game if 1+ then
-    * score +! ;
+: bonus! ( st,b -- ~st )
+    swap  3 not and  or ; 
 
-: new-frame ( -- f )
-    last-roll @ end-frame = ;
-
-: all-down ( n -- f )
-    10 = ;
-
-: 1st-roll ( n -- q )
-    all-down if strike else first then ;
-
-: 2nd-roll ( n -- q )
-    last-roll @ +
-    all-down if spare else second then ; 
-
-: qualify-roll ( n -- q )
-    new-frame if 1st-roll else 2nd-roll then ;
-
-: roll-type ( n -- q )
-    in-game if qualify-roll else drop first then ;
-
-: update-bonus ( q -- )
-    dup strike = if drop bonus @ 4 and if 6 else 5 then
-    else dup spare = if drop 1 
-    else drop bonus @ 2 rshift then then 
-    bonus ! ;
+: frame! ( st,fr -- ~st )
+    4 lshift  swap 240 not and  or ;
  
-: update-frame ( n,q -- )
-    first <> if 1 frame +! 
-               drop end-frame 
-            then
-    last-roll ! ;
+: in-game ( st -- f )
+    frame 10 < ;
 
-: update-last-roll ( n,q -- )
-    first <> if drop end-frame then
-    last-roll ! ;
+: factor ( st -- n )
+    dup bonus
+    swap in-game if 1+ then ;
 
-: add-roll ( n -- )
-    dup update-score
-    dup roll-type
-    dup update-bonus
-    update-frame ;
-
+: add-roll ( st,sc,n -- st,sc )
+    rot dup factor 
+    rot *          
+    rot + ; 
 
