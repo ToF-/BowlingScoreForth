@@ -1,14 +1,14 @@
 ( Bowling.fs )
 
-0 constant half
-1 constant normal
+0 constant first
+1 constant second
 2 constant spare
 3 constant strike 
 
-0 constant B00 
-1 constant B10
-2 constant B11
-3 constant B21
+0 constant no-bonus 
+1 constant bonus1-0
+2 constant bonus1-1
+3 constant bonus2-1
 
 -1 constant end-frame
 
@@ -17,88 +17,75 @@ variable bonus
 variable frame
 variable last-roll
 
-create factors  
-( B00 )  0 ,
-( B10 )  1 ,
-( B11 )  1 ,
-( B21 )  2 ,
+create bonus-factor  
+( no-bonus )  0 ,
+( bonus1-0 )  1 ,
+( bonus1-1 )  1 ,
+( bonus2-1 )  2 ,
 
 create next-bonus 
-           ( half  normal spare strike )
-  ( B00 )    B00 , B00 ,  B10 , B11 ,
-  ( B10 )    B00 , B00 ,  B10 , B11 ,
-  ( B11 )    B10 ,  -1 ,   -1 , B21 ,
-  ( B21 )    B10 ,  -1 ,   -1 , B21 ,
+           ( first      second      spare      strike )
+( no-bonus ) no-bonus , no-bonus ,  bonus1-0 , bonus1-1 ,
+( bonus1-0 ) no-bonus , no-bonus ,  bonus1-0 , bonus1-1 ,
+( bonus1-1 ) bonus1-0 ,  -1      ,   -1      , bonus2-1 ,
+( bonus2-1 ) bonus1-0 ,  -1      ,   -1      , bonus2-1 ,
 
 : start-game
-    0 score ! 
-    0 frame ! 
-    B00 bonus !
-    end-frame last-roll ! ;
+    0 score !  no-bonus bonus !
+    0 frame !  end-frame last-roll ! ;
 
-: in-game 
+: in-game ( -- f )
     frame @ 10 < ;
 
-: frame-factor ( n -- n ) 
-    in-game if 1+ then ;
-
 : update-score ( n -- )
-    factors bonus @ cells + @
+    bonus-factor bonus @ cells + @
     in-game if 1+ then 
     * score +! ; 
 
-: new-frame 
+: new-frame ( -- f )
     last-roll @ end-frame = ;
 
 : all-down ( n -- f )
     10 = ;
 
 : 1st-roll ( n -- q )
-    all-down if 
-        strike 
-    else 
-        half
-    then ;
+    all-down if strike else first then ;
 
 : 2nd-roll ( n -- q )
     last-roll @ +
-    all-down if 
-        spare
-    else
-        normal
-    then ; 
+    all-down if spare else second then ; 
 
 : qualify-roll ( n -- q )
     new-frame if 1st-roll else 2nd-roll then ;
 
-: quality ( n -- q )
-    in-game if qualify-roll else drop half then ;
+: roll-type ( n -- q )
+    in-game if qualify-roll else drop first then ;
 
 : bonus-row ( b -- offset )
     4 cells * + ;
 
-: quality-col ( offset,q -- offset )
+: roll-type-col ( offset,q -- offset )
     cells ;
 
 : update-bonus ( q -- )
-    quality-col
+    roll-type-col
     bonus @ bonus-row 
     next-bonus +
     @ bonus ! ;
 
 : update-frame ( n,q -- )
-    half <> if 1 frame +! 
+    first <> if 1 frame +! 
                drop end-frame 
             then
     last-roll ! ;
 
 : update-last-roll ( n,q -- )
-    half <> if drop end-frame then
+    first <> if drop end-frame then
     last-roll ! ;
 
 : add-roll ( n -- )
     dup update-score
-    dup quality
+    dup roll-type
     dup update-bonus 
     update-frame ;
 
