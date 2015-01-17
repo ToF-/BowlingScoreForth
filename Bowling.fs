@@ -5,11 +5,6 @@
 2 constant spare
 3 constant strike 
 
-0 constant no-bonus 
-1 constant bonus1-0
-2 constant bonus1-1
-3 constant bonus2-1
-
 -1 constant end-frame
 
 variable score
@@ -17,30 +12,21 @@ variable bonus
 variable frame
 variable last-roll
 
-create bonus-factor  
-( no-bonus )  0 ,
-( bonus1-0 )  1 ,
-( bonus1-1 )  1 ,
-( bonus2-1 )  2 ,
-
-create next-bonus 
-           ( first      second      spare      strike )
-( no-bonus ) no-bonus , no-bonus ,  bonus1-0 , bonus1-1 ,
-( bonus1-0 ) no-bonus , no-bonus ,  bonus1-0 , bonus1-1 ,
-( bonus1-1 ) bonus1-0 ,  -1      ,   -1      , bonus2-1 ,
-( bonus2-1 ) bonus1-0 ,  -1      ,   -1      , bonus2-1 ,
+: bonus-factor ( n -- n )
+    3 and ;
 
 : start-game
-    0 score !  no-bonus bonus !
+    0 score !
+    0 bonus !
     0 frame !  end-frame last-roll ! ;
 
 : in-game ( -- f )
     frame @ 10 < ;
 
 : update-score ( n -- )
-    bonus-factor bonus @ cells + @
-    in-game if 1+ then 
-    * score +! ; 
+    bonus @ bonus-factor 
+    in-game if 1+ then
+    * score +! ;
 
 : new-frame ( -- f )
     last-roll @ end-frame = ;
@@ -61,18 +47,12 @@ create next-bonus
 : roll-type ( n -- q )
     in-game if qualify-roll else drop first then ;
 
-: bonus-row ( b -- offset )
-    4 cells * + ;
-
-: roll-type-col ( offset,q -- offset )
-    cells ;
-
 : update-bonus ( q -- )
-    roll-type-col
-    bonus @ bonus-row 
-    next-bonus +
-    @ bonus ! ;
-
+    dup strike = if drop bonus @ 4 and if 6 else 5 then
+    else dup spare = if drop 1 
+    else drop bonus @ 2 rshift then then 
+    bonus ! ;
+ 
 : update-frame ( n,q -- )
     first <> if 1 frame +! 
                drop end-frame 
@@ -86,9 +66,7 @@ create next-bonus
 : add-roll ( n -- )
     dup update-score
     dup roll-type
-    dup update-bonus 
+    dup update-bonus
     update-frame ;
-
-
 
 
