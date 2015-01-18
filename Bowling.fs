@@ -5,13 +5,10 @@
 2 constant spare
 3 constant strike
 
-15 constant end-frame
-
-: start-game ( -- st,sc )
-    0 0 ;
+15 constant new-frame
 
 : bonus ( st -- b )
-    3 and ;
+    7 and ;
 
 : frame ( st -- fr )
     4 rshift 15 and ; 
@@ -38,20 +35,38 @@
 : last-roll ( st -- lr )
     8 rshift 15 and ;
 
+: all-down ( n - f )
+    10 = ;
+
 : 1st-roll-type ( n -- rt )
-    10 = if strike else first then ;
+    all-down if strike else first then ;
 
 : 2nd-roll-type ( n -- rt )
-    10 = if spare else second then ;
+    all-down if spare else second then ;
    
 : roll-type ( st,r -- rt )
     swap last-roll dup 
-    end-frame  = if drop 1st-roll-type 
-    else + 2nd-roll-type then ;
+    new-frame  = if 
+        drop 1st-roll-type 
+    else 
+        + 2nd-roll-type 
+    then ;
 
+: score! ( st,sc,n -- st,sc )
+    rot dup factor
+    rot *
+    rot + ;
+
+: next-bonus ( st,n -- st )
+    over swap roll-type 
+    strike = if 5 bonus! else 0 bonus! then ;
+
+: start-game ( -- st,sc )
+    0 new-frame last-roll!
+    0 ;
 
 : add-roll ( st,sc,n -- st,sc )
-    rot dup factor 
-    rot *          
-    rot + ; 
-
+    dup >r   
+    score!  
+    swap r>
+    next-bonus swap ;

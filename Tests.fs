@@ -20,9 +20,17 @@ start-game swap 2 bonus! swap 4 add-roll assert( 12 equals ) drop
 
 ( add-roll takes frame number into account )
 start-game swap 10 frame! 1 bonus! swap 4 add-roll assert( 4 equals ) drop 
-;
- 
+
 ( roll-type is determined by last-roll and roll )
-0 -1 last-roll! 10 roll-type assert( strike equals ) drop
+0 new-frame last-roll! 10 roll-type assert( strike equals ) 
+0 new-frame last-roll!  9 roll-type assert( first  equals ) 
+0         5 last-roll!  5 roll-type assert( spare  equals ) 
+0         5 last-roll!  4 roll-type assert( second equals ) 
+
+( new bonus is determined by last bonus and roll type )
+start-game  4 add-roll drop assert( bonus 0 equals )
+start-game 10 add-roll drop assert( bonus 5 equals )
+
+; 
 tests
 .s
