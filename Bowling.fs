@@ -17,7 +17,7 @@
     -1 xor ;
 
 : bonus! ( st,b -- ~st )
-    swap  3 not and  or ; 
+    swap  7 not and  or ; 
 
 : frame! ( st,fr -- ~st )
     4 lshift  swap 240 not and  or ;
@@ -58,8 +58,15 @@
     rot + ;
 
 : next-bonus ( st,n -- st )
-    over swap roll-type 
-    strike = if 5 bonus! else 0 bonus! then ;
+    over swap roll-type   ( st,rt )
+    over bonus 2 rshift   ( st,rt,b )
+    swap  
+    dup  strike = if
+        drop 5 +
+    else spare  = if 
+        drop 1 
+    then then 
+    bonus! ;
 
 : start-game ( -- st,sc )
     0 new-frame last-roll!

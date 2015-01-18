@@ -27,9 +27,16 @@ start-game swap 10 frame! 1 bonus! swap 4 add-roll assert( 4 equals ) drop
 0         5 last-roll!  5 roll-type assert( spare  equals ) 
 0         5 last-roll!  4 roll-type assert( second equals ) 
 
-( new bonus is determined by last bonus and roll type )
-start-game  4 add-roll drop assert( bonus 0 equals )
-start-game 10 add-roll drop assert( bonus 5 equals )
+( next bonus is determined by last bonus, last roll, roll, and frame number)
+0 new-frame last-roll! 0 bonus! 4  next-bonus assert( bonus 0 equals )
+0 new-frame last-roll! 1 bonus! 4  next-bonus assert( bonus 0 equals )
+0 new-frame last-roll! 5 bonus! 4  next-bonus assert( bonus 1 equals )
+0 new-frame last-roll! 6 bonus! 4  next-bonus assert( bonus 1 equals )
+0         6 last-roll! 0 bonus! 4  next-bonus assert( bonus 1 equals )
+0         6 last-roll! 1 bonus! 4  next-bonus assert( bonus 1 equals )
+0 new-frame last-roll! 0 bonus! 10 next-bonus assert( bonus 5 equals )
+0 new-frame last-roll! 1 bonus! 10 next-bonus assert( bonus 5 equals )
+0 new-frame last-roll! 5 bonus! 10 next-bonus assert( bonus 6 equals )
 
 ; 
 tests
