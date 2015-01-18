@@ -38,9 +38,19 @@
     else    strike =  if      strike!
     then then ; 
 
-: adjust-frame ( frame,last - frame )
-    new-frame = if 1+ then ;
-
 : last-roll! ( roll,type -- last-roll )
     first <> if drop new-frame then ;
     
+: adjust-frame ( frame,last - frame )
+    new-frame = if 1+ then ;
+
+: get  ( w,i -- n )    2* 2* rshift 15 and ;        
+: >nibble ( v,i -- v)  2* 2* lshift ; 
+: mask ( w,i -- w )    15 swap >nibble -1 xor and ;
+: store ( v,w,i -- w ) rot swap >nibble or ; 
+: put ( v,w,i -- w ) 
+    dup >r mask swap r> store ;
+
+0 constant bonus->
+1 constant lastr->
+2 constant frame-> 

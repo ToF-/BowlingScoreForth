@@ -43,17 +43,26 @@ cr ." new bonus depends on previous bonus and roll type "
   b-strike strike new-bonus assert( b-double equals )
   b-double strike new-bonus assert( b-double equals )
 
-cr ." adjusting frame depends on last-roll "
-( frame,last                       -- new frame )
-    0   5        adjust-frame assert( 0 equals )  
-    5  new-frame adjust-frame assert( 6 equals )  
-
 cr ." adjusting last roll depends on roll and roll type "
 ( roll  type                    -- new last-roll )
    10   first  last-roll!  assert( 10 equals )   
    10   strike last-roll!  assert( new-frame equals )   
     5   spare  last-roll!  assert( new-frame equals )   
     4   second last-roll!  assert( new-frame equals )
+
+cr ." adjusting frame depends on last-roll "
+( frame,last                       -- new frame )
+    0   5        adjust-frame assert( 0 equals )  
+    5  new-frame adjust-frame assert( 6 equals )  
+
+cr ." status word stores frame,last-roll,bonus "
+   6 4807 bonus-> put assert( bonus-> get 6 equals ) 
+   8 4807 frame-> put assert( frame-> get 8 equals )  
+   9 4807 lastr-> put assert( lastr-> get 9 equals )
+   
+
+
+
 
 
 ; 
