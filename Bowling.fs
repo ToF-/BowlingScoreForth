@@ -62,7 +62,10 @@
     dup  frame-> get 
     swap bonus-> get 
     rot  score+  ;
-0 variable pins
-0 variable status
-0 variable r-type
+
+: update-bonus ( status,roll -- status )
+    over lastr-> get swap roll-type 
+    over bonus-> get swap new-bonus
+    swap bonus-> put ; 
+
 

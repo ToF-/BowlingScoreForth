@@ -68,5 +68,8 @@ start-game assert( lastr-> get new-frame equals ) drop
 cr ." updating score of a current game "
 start-game 10 update-score assert( 10 equals ) 
 start-game 6 swap bonus-> put 10 update-score assert( 30 equals )
+
+cr ." updating the bonus of a current game "
+start-game 10 update-bonus assert( bonus-> get 5 equals )
 ; 
 tests
