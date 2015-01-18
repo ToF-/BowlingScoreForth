@@ -48,9 +48,24 @@
 : >nibble ( v,i -- v)  2* 2* lshift ; 
 : mask ( w,i -- w )    15 swap >nibble -1 xor and ;
 : store ( v,w,i -- w ) rot swap >nibble or ; 
-: put ( v,w,i -- w ) 
-    dup >r mask swap r> store ;
+: put ( v,w,i -- w )   dup rot swap mask swap store ;
 
 0 constant bonus->
 1 constant lastr->
 2 constant frame-> 
+
+: start-game ( -- status,score )
+    new-frame 0 lastr-> put 
+    0 ;
+
+: add-score ( score,roll,status -- score )
+    dup  frame-> get
+    swap bonus-> get
+    rot  score+ ;
+
+: add-roll ( status,score,roll -- status,score )
+    rot >r swap over r@  ( roll,score,roll,status )
+    add-score            ( roll,score )
+    over r@ lastr-> get   ( roll,score,roll,lastr )
+    rot roll-type        ( score,status,type )
+    ; 

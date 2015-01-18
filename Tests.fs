@@ -59,6 +59,17 @@ cr ." status word stores frame,last-roll,bonus "
    6 4807 bonus-> put assert( bonus-> get 6 equals ) 
    8 4807 frame-> put assert( frame-> get 8 equals )  
    9 4807 lastr-> put assert( lastr-> get 9 equals )
+
+cr ." start-game creates a null score and initial bonus "
+start-game drop assert( bonus-> get no-bonus equals )
+start-game drop assert( frame-> get 0 equals )
+start-game drop assert( lastr-> get new-frame equals )
+
+cr ." add-roll updates score, bonus, last roll and frame "
+start-game 10 add-roll assert( 10 equals ) drop
+start-game 10 add-roll drop assert( bonus-> get 5 equals ) drop
+
+ 
    
 
 
