@@ -8,37 +8,53 @@ s" Bowling.fs" included
     then ;
 
 : tests
-( start-game initialize score and status )
-start-game assert( 0 equals ) drop
 
-( add-roll increases score )
-start-game 5 add-roll 4 add-roll assert( 9 equals ) drop
+cr ." roll is added to score " 
+( score frame bonus roll            --  new score )
+   100    0  no-bonus 5  score+ assert( 105 equals ) 
 
-( add-roll takes bonus into account )
-start-game swap 1 bonus! swap 4 add-roll assert( 8 equals ) drop
-start-game swap 2 bonus! swap 4 add-roll assert( 12 equals ) drop
+cr ." score takes bonus into account "
+( score frame bonus roll            --  new score )
+   100    0  b-spare  2  score+ assert( 104 equals )
+   100    0  b-strike 3  score+ assert( 106 equals )
+   100    0  b-double 4  score+ assert( 112 equals )
 
-( add-roll takes frame number into account )
-start-game swap 10 frame! 1 bonus! swap 4 add-roll assert( 4 equals ) drop 
+cr ." roll is added only as bonus to score if frame = 10 "
+( score frame bonus roll           --  new score )
+   100   10  b-spare  5  score+ assert( 105 equals ) 
+   100   10  b-double 3  score+ assert( 106 equals )
+   100   10  no-bonus 4  score+ assert( 100 equals )
 
-( roll-type is determined by last-roll and roll )
-0 new-frame last-roll! 10 roll-type assert( strike equals ) 
-0 new-frame last-roll!  9 roll-type assert( first  equals ) 
-0         5 last-roll!  5 roll-type assert( spare  equals ) 
-0         5 last-roll!  4 roll-type assert( second equals ) 
+cr ." roll type is calculated with last-roll and roll value "
+(  last   roll                -- roll-type )
+new-frame   4  roll-type assert( first  equals )
+new-frame  10  roll-type assert( strike equals )
+    5       4  roll-type assert( second equals )
+    5       5  roll-type assert( spare  equals )
 
-( next bonus is determined by last bonus, last roll, roll, and frame number)
-0 new-frame last-roll! 0 bonus! 4  next-bonus assert( bonus 0 equals )
-0 new-frame last-roll! 1 bonus! 4  next-bonus assert( bonus 0 equals )
-0 new-frame last-roll! 5 bonus! 4  next-bonus assert( bonus 1 equals )
-0 new-frame last-roll! 6 bonus! 4  next-bonus assert( bonus 1 equals )
-0         6 last-roll! 0 bonus! 4  next-bonus assert( bonus 1 equals )
-0         6 last-roll! 1 bonus! 4  next-bonus assert( bonus 1 equals )
-0 new-frame last-roll! 0 bonus! 10 next-bonus assert( bonus 5 equals )
-0 new-frame last-roll! 1 bonus! 10 next-bonus assert( bonus 5 equals )
-0 new-frame last-roll! 5 bonus! 10 next-bonus assert( bonus 6 equals )
-0 new-frame last-roll! 6 bonus! 10 frame! 10 next-bonus assert( bonus 1 equals ) 
+cr ." new bonus depends on previous bonus and roll type "
+(  bonus   type                  -- new bonus )
+  no-bonus first  new-bonus assert( no-bonus equals )
+  b-spare  first  new-bonus assert( no-bonus equals )
+  b-strike first  new-bonus assert( b-spare  equals )
+  no-bonus spare  new-bonus assert( b-spare  equals )
+  no-bonus strike new-bonus assert( b-strike equals )
+  b-spare  strike new-bonus assert( b-strike equals )
+  b-strike strike new-bonus assert( b-double equals )
+  b-double strike new-bonus assert( b-double equals )
+
+cr ." adjusting frame depends on last-roll "
+( frame,last                       -- new frame )
+    0   5        adjust-frame assert( 0 equals )  
+    5  new-frame adjust-frame assert( 6 equals )  
+
+cr ." adjusting last roll depends on roll and roll type "
+( roll  type                    -- new last-roll )
+   10   first  last-roll!  assert( 10 equals )   
+   10   strike last-roll!  assert( new-frame equals )   
+    5   spare  last-roll!  assert( new-frame equals )   
+    4   second last-roll!  assert( new-frame equals )
+
 
 ; 
 tests
-.s

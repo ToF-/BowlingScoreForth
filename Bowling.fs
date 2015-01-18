@@ -7,77 +7,40 @@
 
 15 constant new-frame
 
-: bonus ( st -- b )
-    7 and ;
+0 constant no-bonus
+1 constant b-spare
+5 constant b-strike
+6 constant b-double
 
-: frame ( st -- fr )
-    4 rshift 15 and ; 
+: factor   ( bonus -- n )  3 and ;
+: in-game  ( frame -- f )  10 < ;
+: all-down ( roll  -- f )  10 = ;
 
-: not ( n -- n ) 
-    -1 xor ;
+: score+ ( score,frame,bonus,roll -- score )
+    swap factor
+    rot in-game if 1+ then
+    * + ;
 
-: bonus! ( st,b -- ~st )
-    swap  7 not and  or ; 
-
-: frame! ( st,fr -- ~st )
-    4 lshift  swap 240 not and  or ;
- 
-: in-game ( st -- f )
-    frame 10 < ;
-
-: factor ( st -- n )
-    dup bonus
-    swap in-game if 1+ then ;
-
-: last-roll! ( st,n -- ~st )
-    8 lshift  swap 255 not and  or ;
-
-: last-roll ( st -- lr )
-    8 rshift 15 and ;
-
-: all-down ( n - f )
-    10 = ;
-
-: 1st-roll-type ( n -- rt )
-    all-down if strike else first then ;
-
-: 2nd-roll-type ( n -- rt )
-    all-down if spare else second then ;
-   
-: roll-type ( st,r -- rt )
-    swap last-roll dup 
-    new-frame  = if 
-        drop 1st-roll-type 
-    else 
-        + 2nd-roll-type 
+: roll-type ( last,roll -- roll type )
+    swap dup new-frame = if 
+        drop all-down if strike else first then 
+    else
+        + all-down if spare else second then
     then ;
 
-: score! ( st,sc,n -- st,sc )
-    rot dup factor
-    rot *
-    rot + ;
+: next-bonus! ( bonus -- bonus ) 2 rshift ;
+: spare!      ( bonus -- bonus ) 1 or ;
+: strike!     ( bonus -- bonus ) 5 +  ;
 
-: next-bonus ( st,n -- st )
-    over frame 10 < if 
-        over swap roll-type   ( st,rt )
-    else
-        drop first
-    then 
-    over bonus 2 rshift   ( st,rt,b )
-    swap  
-    dup  strike = if
-        drop 5 +
-    else spare  = if 
-        drop 1 
-    then then 
-    bonus! ;
+: new-bonus ( bonus,type -- bonus )
+    swap next-bonus!
+    swap dup spare =  if drop spare!  
+    else    strike =  if      strike!
+    then then ; 
 
-: start-game ( -- st,sc )
-    0 new-frame last-roll!
-    0 ;
+: adjust-frame ( frame,last - frame )
+    new-frame = if 1+ then ;
 
-: add-roll ( st,sc,n -- st,sc )
-    dup >r   
-    score!  
-    swap r>
-    next-bonus swap ;
+: last-roll! ( roll,type -- last-roll )
+    first <> if drop new-frame then ;
+    
