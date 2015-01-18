@@ -58,7 +58,11 @@
     rot + ;
 
 : next-bonus ( st,n -- st )
-    over swap roll-type   ( st,rt )
+    over frame 10 < if 
+        over swap roll-type   ( st,rt )
+    else
+        drop first
+    then 
     over bonus 2 rshift   ( st,rt,b )
     swap  
     dup  strike = if

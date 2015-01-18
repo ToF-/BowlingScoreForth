@@ -37,6 +37,7 @@ start-game swap 10 frame! 1 bonus! swap 4 add-roll assert( 4 equals ) drop
 0 new-frame last-roll! 0 bonus! 10 next-bonus assert( bonus 5 equals )
 0 new-frame last-roll! 1 bonus! 10 next-bonus assert( bonus 5 equals )
 0 new-frame last-roll! 5 bonus! 10 next-bonus assert( bonus 6 equals )
+0 new-frame last-roll! 6 bonus! 10 frame! 10 next-bonus assert( bonus 1 equals ) 
 
 ; 
 tests
