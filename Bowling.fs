@@ -54,18 +54,15 @@
 1 constant lastr->
 2 constant frame-> 
 
-: start-game ( -- status,score )
-    new-frame 0 lastr-> put 
-    0 ;
+: start-game ( -- score,status )
+    0 new-frame 0 lastr-> put ;
+    
+: update-score ( score,status,roll -- score )
+    swap  
+    dup  frame-> get 
+    swap bonus-> get 
+    rot  score+  ;
+0 variable pins
+0 variable status
+0 variable r-type
 
-: add-score ( score,roll,status -- score )
-    dup  frame-> get
-    swap bonus-> get
-    rot  score+ ;
-
-: add-roll ( status,score,roll -- status,score )
-    rot >r swap over r@  ( roll,score,roll,status )
-    add-score            ( roll,score )
-    over r@ lastr-> get   ( roll,score,roll,lastr )
-    rot roll-type        ( score,status,type )
-    ; 
