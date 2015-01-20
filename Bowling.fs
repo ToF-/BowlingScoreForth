@@ -1,71 +1,41 @@
 ( Bowling.fs )
 
-0 constant first
+0 constant first 
 1 constant second
 2 constant spare
 3 constant strike
 
-15 constant new-frame
+16 constant new-frame
+variable frame
+variable bonus
+variable last-roll
 
-0 constant no-bonus
-1 constant b-spare
-5 constant b-strike
-6 constant b-double
+: in-game ( -- 1|0 )
+    frame @ 10 < 1 and ;
 
-: factor   ( bonus -- n )  3 and ;
-: in-game  ( frame -- f )  10 < ;
-: all-down ( roll  -- f )  10 = ;
+: c-bonus ( -- 0|1|2 )
+    bonus @ 3 and ;
 
-: score+ ( score,frame,bonus,roll -- score )
-    swap factor
-    rot in-game if 1+ then
-    * + ;
+: factor ( roll -- n )
+    c-bonus in-game + * ;
 
-: roll-type ( last,roll -- roll type )
-    swap dup new-frame = if 
-        drop all-down if strike else first then 
-    else
-        + all-down if spare else second then
-    then ;
+: end-frame
+    new-frame last-roll ! ;
+   
+: all-down 
+    10 = ;
+ 
+: 1st-roll-type ( roll -- t )
+    dup all-down if drop strike end-frame 
+    else last-roll ! first then ;
 
-: next-bonus! ( bonus -- bonus ) 2 rshift ;
-: spare!      ( bonus -- bonus ) 1 or ;
-: strike!     ( bonus -- bonus ) 5 +  ;
 
-: new-bonus ( bonus,type -- bonus )
-    swap next-bonus!
-    swap dup spare =  if drop spare!  
-    else    strike =  if      strike!
-    then then ; 
+: 2nd-roll-type ( roll,last -- t )
+    + all-down if spare else second then
+    end-frame ;
 
-: last-roll! ( roll,type -- last-roll )
-    first <> if drop new-frame then ;
-    
-: adjust-frame ( frame,last - frame )
-    new-frame = if 1+ then ;
-
-: get  ( w,i -- n )    2* 2* rshift 15 and ;        
-: >nibble ( v,i -- v)  2* 2* lshift ; 
-: mask ( w,i -- w )    15 swap >nibble -1 xor and ;
-: store ( v,w,i -- w ) rot swap >nibble or ; 
-: put ( v,w,i -- w )   dup rot swap mask swap store ;
-
-0 constant bonus->
-1 constant lastr->
-2 constant frame-> 
-
-: start-game ( -- score,status )
-    0 new-frame 0 lastr-> put ;
-    
-: update-score ( score,status,roll -- score )
-    swap  
-    dup  frame-> get 
-    swap bonus-> get 
-    rot  score+  ;
-
-: update-bonus ( status,roll -- status )
-    over lastr-> get swap roll-type 
-    over bonus-> get swap new-bonus
-    swap bonus-> put ; 
+: roll-type ( roll -- t )
+    last-roll @ dup new-frame and 
+    if drop 1st-roll-type else 2nd-roll-type then ;
 
 
