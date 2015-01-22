@@ -5,10 +5,10 @@
 2 constant spare
 3 constant strike
 
-16 constant new-frame
 variable frame
 variable bonus
 variable last-roll
+variable new-frame
 
 : in-game ( -- 1|0 )   frame @ 10 < 1 and ;
 
@@ -18,21 +18,31 @@ variable last-roll
 
 : roll-score ( roll -- n ) current-bonus in-game + * ;
 
-: end-frame new-frame last-roll ! ;
+: end-frame! true new-frame ! ;
+: in-frame! false new-frame ! ;
    
 : all-down 10 = ;
  
 : 1st-roll-type ( roll -- t )
-    dup all-down if drop strike end-frame 
-    else last-roll ! first then ;
+    dup all-down if 
+        drop end-frame! 
+        strike
+    else 
+        last-roll ! 
+        in-frame!
+        first 
+    then ;
 
 : 2nd-roll-type ( roll,last -- t )
     + all-down if spare else second then
-    end-frame ;
+    end-frame! ;
 
 : roll-type ( roll -- t )
-    last-roll @ dup new-frame and 
-    if drop 1st-roll-type else 2nd-roll-type then ;
+    new-frame @ if 
+        1st-roll-type 
+    else
+        last-roll @ 2nd-roll-type
+    then ;
 
 : spare! ( b -- b )  1 or ;
 
@@ -48,11 +58,11 @@ variable last-roll
     in-game if roll-bonus else swap drop then ; 
 
 : adjust-frame 
-    in-game last-roll @ new-frame = and  if 1 frame +! then ;
+    in-game new-frame @ and  if 1 frame +! then ;
 
 : start-game ( -- score )
     0 frame !
-    end-frame 
+    end-frame! 
     0 bonus !
     0 ;
 
@@ -61,5 +71,4 @@ variable last-roll
     swap roll-type new-bonus bonus !
     adjust-frame ;
      
-
 
