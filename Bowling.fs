@@ -16,7 +16,7 @@ variable last-roll
 
 : next-bonus ( -- 0|1 )   bonus @ 2 rshift ;
 
-: factor ( roll -- n ) current-bonus in-game + * ;
+: roll-score ( roll -- n ) current-bonus in-game + * ;
 
 : end-frame new-frame last-roll ! ;
    
@@ -48,7 +48,18 @@ variable last-roll
     in-game if roll-bonus else swap drop then ; 
 
 : adjust-frame 
-    in-game last-roll @ new-frame = and if 1 frame +! then ;
+    in-game last-roll @ new-frame = and  if 1 frame +! then ;
+
+: start-game ( -- score )
+    0 frame !
+    end-frame 
+    0 bonus !
+    0 ;
+
+: add-roll ( score,roll -- score )
+    swap over roll-score +
+    swap roll-type new-bonus bonus !
+    adjust-frame ;
      
 
 
