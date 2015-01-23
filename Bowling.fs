@@ -4,11 +4,10 @@
 1 constant second
 2 constant spare
 3 constant strike
-
-variable frame
-variable bonus
-variable last-roll
-variable new-frame
+  variable frame
+  variable bonus
+  variable last-roll
+  variable new-frame
 
 : in-game       ( -- 1|0 )   frame @ 10 < 1 and ;
 : current-bonus ( -- 0|1|2 ) bonus @ 3 and ;
