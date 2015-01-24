@@ -1,12 +1,13 @@
 ( Bowling.fs )
 
 15 constant no-roll
+10 constant all-down
+no-roll all-down + constant strike-roll
 
-: mark-frame ( last,roll -- last )
-    +   dup
-    dup  25 =
-    swap 10 <= 
-    or if drop 15 else 15 - then ; 
+: mark-prev-roll ( last,roll -- last )
+    + dup dup
+    strike-roll =  swap all-down <=  or 
+    if drop no-roll  else no-roll - then ; 
 
 : new-frame ( frame,last -- frame )
     no-roll = if 1+ 10 min then ;
@@ -17,9 +18,9 @@
 : >field ( v -- w ) field-size * lshift ;
 : field> ( w -- w ) field-size * rshift ;
 
-0 constant .lastr
-1 constant .frame
-2 constant .bonus
+0 constant prev-roll
+1 constant frame
+2 constant bonus
 
 : .! ( value,state,n -- state )
     >r mask r@ >field -1 xor and swap r> >field or ;  
@@ -28,7 +29,7 @@
     field> mask and ;
 
 : initial ( -- state )
-    no-roll 0 .lastr .!
-    0 swap .bonus .! 
-    0 swap .frame .! ;
+    no-roll 0 prev-roll .!
+    0 swap bonus .! 
+    0 swap frame .! ;
 
