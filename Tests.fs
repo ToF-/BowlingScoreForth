@@ -60,7 +60,8 @@ nr  9 roll-type assert( first  equals )
 start-game drop assert( 0 equals ) 
 start-game swap drop assert( initial equals )
 
-start-game 10 add-roll drop assert( 10 equals )
+start-game 10 add-roll drop      assert( 10 equals )
+start-game 10 add-roll swap drop assert( bonus .@ strike-bonus equals )
 
 
 ; 

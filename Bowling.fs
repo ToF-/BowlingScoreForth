@@ -77,10 +77,7 @@ no-roll all-down + constant strike-roll
 : start-game ( -- score,state )
     0 initial ;
 
-: state-roll-score ( roll,state -- n )
-    dup frame .@ swap bonus .@ rot roll-score ; 
- 
+
 : add-roll ( score,state,roll -- score,state )
-    over state-roll-score
-    rot + swap
-    ;
+   
+;
