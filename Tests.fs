@@ -57,6 +57,11 @@ nr  9 roll-type assert( first  equals )
 10 strike-bonus 5 roll-score assert( 5  equals )
 10 double-bonus 5 roll-score assert( 10 equals )
 
+start-game drop assert( 0 equals ) 
+start-game swap drop assert( initial equals )
+
+start-game 10 add-roll drop assert( 10 equals )
+
 
 ; 
 tests
