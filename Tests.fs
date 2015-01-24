@@ -18,6 +18,11 @@ s" Bowling.fs" included
  0  5 new-frame assert( 0 equals )
 10 15 new-frame assert( 10 equals )
 
+initial assert( .bonus .@ 0 equals )
+initial assert( .frame .@ 0 equals )
+initial assert( .lastr .@ no-roll equals )
+
+
 7 0 .frame .! assert( .frame .@ 7 equals )
 
 4 0 .lastr .! assert( .lastr .@ 4 equals )
