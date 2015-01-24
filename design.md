@@ -1,7 +1,7 @@
 In order to calculate the score of a game just after a roll, you need to know:  
 * the current score,
-* the bonus situation,
-* the frame number,
+* the current bonus situation,
+* the current frame number,
 * the last roll or an info that the frame is complete. 
 
 Then there are 5 steps for each roll.  
