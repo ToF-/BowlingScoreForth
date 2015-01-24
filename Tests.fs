@@ -33,16 +33,19 @@ nr  9 roll-type assert( first  equals )
  2  8 roll-type assert( spare  equals )
  2  7 roll-type assert( second equals )
 
-no-bonus     nr 0 roll-bonus assert( no-bonus equals )
-spare-bonus  nr 0 roll-bonus assert( no-bonus equals )
-strike-bonus nr 0 roll-bonus assert( spare-bonus equals )
-double-bonus nr 0 roll-bonus assert( spare-bonus equals )
+0 no-bonus     nr 0 roll-bonus assert( no-bonus equals )
+0 spare-bonus  nr 0 roll-bonus assert( no-bonus equals )
+0 strike-bonus nr 0 roll-bonus assert( spare-bonus equals )
+0 double-bonus nr 0 roll-bonus assert( spare-bonus equals )
 
-no-bonus     nr 10 roll-bonus assert( strike-bonus equals )
-spare-bonus  nr 10 roll-bonus assert( strike-bonus equals ) 
-strike-bonus nr 10 roll-bonus assert( double-bonus equals ) 
+0 no-bonus     nr 10 roll-bonus assert( strike-bonus equals )
+0 spare-bonus  nr 10 roll-bonus assert( strike-bonus equals ) 
+0 strike-bonus nr 10 roll-bonus assert( double-bonus equals ) 
 
-no-bonus     6  4  roll-bonus assert( spare-bonus  equals )
+0 no-bonus     6  4  roll-bonus assert( spare-bonus  equals )
+
+10 spare-bonus  nr 10 roll-bonus assert( no-bonus equals ) 
+10 strike-bonus nr 10 roll-bonus assert( spare-bonus equals ) 
 
 0 no-bonus     5 roll-score assert( 5  equals )
 0 spare-bonus  5 roll-score assert( 10 equals )

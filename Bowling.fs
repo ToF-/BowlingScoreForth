@@ -53,18 +53,22 @@ no-roll all-down + constant strike-roll
 : next-bonus ( bonus -- bonus )
     2 rshift ;
 
-: roll-bonus ( bonus,last,roll -- bonus )
-    roll-type  swap
-    next-bonus swap
+: frame-factor ( frame -- 1|0 )
+    10 / 1  swap - ;
+
+: add-roll-bonus ( bonus,type -- bonus )
     dup strike = if drop strike-bonus + 
     else spare = if spare-bonus or 
     then then ; 
 
+: roll-bonus ( frame,bonus,last,roll -- bonus )
+        roll-type 
+    rot frame-factor *
+    swap next-bonus
+    swap add-roll-bonus ;
+
 : current-bonus ( bonus -- bonus )
     3 and ;
-
-: frame-factor ( frame -- 1|0 )
-    10 / 1  swap - ;
 
 : roll-score ( frame,bonus,roll -- n )
     swap current-bonus  
