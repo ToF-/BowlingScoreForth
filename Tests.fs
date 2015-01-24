@@ -43,6 +43,18 @@ spare-bonus  nr 10 roll-bonus assert( strike-bonus equals )
 strike-bonus nr 10 roll-bonus assert( double-bonus equals ) 
 
 no-bonus     6  4  roll-bonus assert( spare-bonus  equals )
+
+0 no-bonus     5 roll-score assert( 5  equals )
+0 spare-bonus  5 roll-score assert( 10 equals )
+0 strike-bonus 5 roll-score assert( 10 equals )
+0 double-bonus 5 roll-score assert( 15 equals )
+
+10 no-bonus     5 roll-score assert( 0  equals )
+10 spare-bonus  5 roll-score assert( 5  equals )
+10 strike-bonus 5 roll-score assert( 5  equals )
+10 double-bonus 5 roll-score assert( 10 equals )
+
+
 ; 
 tests
 ~~
