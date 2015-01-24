@@ -33,3 +33,29 @@ no-roll all-down + constant strike-roll
     0 swap bonus .! 
     0 swap frame .! ;
 
+0 constant first
+1 constant second
+2 constant spare
+3 constant strike
+
+: roll-type ( last,roll -- type )
+    +    dup 25 = if drop strike
+    else dup 10 = if drop spare 
+    else     10 < if second
+    else             first 
+    then then then ; 
+
+0 constant no-bonus
+1 constant spare-bonus
+4 1 or constant strike-bonus 
+4 2 or constant double-bonus
+
+: next-bonus ( bonus -- bonus )
+    2 rshift ;
+
+: roll-bonus ( bonus,last,roll -- bonus )
+    roll-type
+    swap next-bonus swap
+    dup strike = if drop strike-bonus + 
+    else spare = if spare-bonus or 
+    then then ; 
