@@ -1,13 +1,12 @@
 ( Bowling.fs )
 
-: mark-frame ( roll,last -- last )
-    15 = if 
-        dup 10 = if drop 15 then
-    else
-        drop 15 
-    then ; 
-
 15 constant no-roll
+
+: mark-frame ( last,roll -- last )
+    +   dup
+    dup  25 =
+    swap 10 <= 
+    or if drop 15 else 15 - then ; 
 
 : new-frame ( frame,last -- frame )
     no-roll = if 1+ 10 min then ;
