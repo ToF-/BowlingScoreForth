@@ -2,7 +2,7 @@ s" Bowling.fs" included
 
 : equals ( result,expected -- f )
     2dup <> if
-        ." assertion failed: expected " . ." but was " . cr 
+        ~~ ." assertion failed: expected " . ." but was " . cr 
     else
         2drop true
     then ;
@@ -47,15 +47,15 @@ nr  9 roll-type assert( first  equals )
 10 spare-bonus  nr 10 roll-bonus assert( no-bonus equals ) 
 10 strike-bonus nr 10 roll-bonus assert( spare-bonus equals ) 
 
-0 no-bonus     5 roll-score assert( 5  equals )
-0 spare-bonus  5 roll-score assert( 10 equals )
-0 strike-bonus 5 roll-score assert( 10 equals )
-0 double-bonus 5 roll-score assert( 15 equals )
+5 0 no-bonus     roll-score assert( 5  equals )
+5 0 spare-bonus  roll-score assert( 10 equals )
+5 0 strike-bonus roll-score assert( 10 equals )
+5 0 double-bonus roll-score assert( 15 equals )
 
-10 no-bonus     5 roll-score assert( 0  equals )
-10 spare-bonus  5 roll-score assert( 5  equals )
-10 strike-bonus 5 roll-score assert( 5  equals )
-10 double-bonus 5 roll-score assert( 10 equals )
+5 10 no-bonus     roll-score assert( 0  equals )
+5 10 spare-bonus  roll-score assert( 5  equals )
+5 10 strike-bonus roll-score assert( 5  equals )
+5 10 double-bonus roll-score assert( 10 equals )
 
 start-game assert( score 0 equals ) 
 start-game assert( initial equals )
@@ -64,7 +64,7 @@ initial
 strike-bonus swap bonus set 
 1  swap frame set
 15 swap track set
-dup 10 >roll-score assert( 20 equals )
+dup 10 swap >roll-score assert( 20 equals )
 dup 10 >roll-bonus assert( double-bonus equals )
 dup 10 >mark-track assert( 15 equals )
     15 >new-frame assert( 2 equals )

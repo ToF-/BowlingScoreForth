@@ -70,15 +70,15 @@ no-roll all-down + constant strike-roll
 : current-bonus ( bonus -- bonus )
     3 and ;
 
-: roll-score ( frame,bonus,roll -- n )
-    swap current-bonus  
-    rot  frame-factor  +  *  ;
+: roll-score ( roll,frame,bonus -- n )
+    current-bonus  
+    swap frame-factor  + * ;
 
 : start-game ( -- state )
     initial ;
 
-: >roll-score ( state,roll -- n )
-    swap dup frame get swap bonus get rot roll-score ;
+: >roll-score ( roll,state -- n )
+    dup frame get swap bonus get roll-score ;
 
 : >roll-bonus ( state,roll -- bonus )
     >r 
@@ -103,7 +103,7 @@ no-roll all-down + constant strike-roll
     swap 16773120 -1 xor and or ;
 
 : add-roll ( state,roll -- state )
-    2dup >roll-score            ( state,roll,n )
+    2dup swap >roll-score            ( state,roll,n )
     rot add-score swap          ( state,roll ) 
     2dup >roll-bonus -rot       ( b,state,roll )
     over swap >mark-track swap  ( b,t,state )
