@@ -74,8 +74,8 @@ no-roll all-down + constant strike-roll
     swap current-bonus  
     rot  frame-factor  +  *  ;
 
-: start-game ( -- score,state )
-    0 initial ;
+: start-game ( -- state )
+    initial ;
 
 : >roll-score ( state,roll -- n )
     swap dup frame get swap bonus get rot roll-score ;
@@ -94,15 +94,22 @@ no-roll all-down + constant strike-roll
     swap frame get
     swap new-frame ;
 
-: add-roll ( score,state,roll -- score,state )
-    2dup >roll-score -rot ( score,n,state,roll )
-    2dup >roll-bonus -rot ( score,n,b,state,roll )
-    over swap >mark-track swap ( score,n,b,t,state )
-    2dup ( score,n,b,t,state,t,state )
-    swap >new-frame swap  ( score,n,b,t,f,state )
-    frame set            ( score,n,b,t,state )
-    track set            ( score,n,b,state )
-    bonus set            ( score,n,state )
-    -rot + swap ;       ( score,state )
-   
+: score ( state -- score )
+    12 rshift ;   
+
+: add-score ( state,n -- state )
+    swap over score + 
+    12 lshift 
+    swap 16773120 -1 xor and or ;
+
+: add-roll ( state,roll -- state )
+    2dup >roll-score            ( state,roll,n )
+    rot add-score swap          ( state,roll ) 
+    2dup >roll-bonus -rot       ( b,state,roll )
+    over swap >mark-track swap  ( b,t,state )
+    2dup                        ( b,t,state,t,state )
+    swap >new-frame swap        ( b,t,f,state )
+    frame set                   ( b,t,state )
+    track set                   ( b,state )
+    bonus set ;                 ( state )
 

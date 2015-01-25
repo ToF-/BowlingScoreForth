@@ -57,8 +57,8 @@ nr  9 roll-type assert( first  equals )
 10 strike-bonus 5 roll-score assert( 5  equals )
 10 double-bonus 5 roll-score assert( 10 equals )
 
-start-game drop assert( 0 equals ) 
-start-game swap drop assert( initial equals )
+start-game assert( score 0 equals ) 
+start-game assert( initial equals )
 
 initial
 strike-bonus swap bonus set 
@@ -69,13 +69,14 @@ dup 10 >roll-bonus assert( double-bonus equals )
 dup 10 >mark-track assert( 15 equals )
     15 >new-frame assert( 2 equals )
 
-start-game 10 add-roll drop assert( 10 equals )
-start-game 10 add-roll swap drop assert( frame get 1 equals )
-start-game 10 add-roll swap drop assert( bonus get strike-bonus equals )
-start-game 10 add-roll swap drop assert( track get 15 equals )
+start-game 10 add-roll assert( score 10 equals )
+start-game 10 add-roll assert( frame get 1 equals )
+start-game 10 add-roll assert( bonus get strike-bonus equals )
+start-game 10 add-roll assert( track get 15 equals )
 
-start-game 12 0 do 10 add-roll loop drop assert( 300 equals )  
-start-game 20 0 do 4 add-roll ~~ loop drop assert( 20 4 * equals )  
+
+start-game 12 0 do 10 add-roll loop assert( score 300 equals )  
+start-game 20 0 do 4 add-roll  loop assert( score 20 4 * equals )  
 ; 
 hex
 tests
