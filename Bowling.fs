@@ -4,7 +4,7 @@
 10 constant all-down
 no-roll all-down + constant strike-roll
 
-: mark-prev-roll ( last,roll -- last )
+: mark-track ( last,roll -- last )
     + dup dup
     strike-roll =  swap all-down <=  or 
     if drop no-roll  else no-roll - then ; 
@@ -18,20 +18,20 @@ no-roll all-down + constant strike-roll
 : >field ( v -- w ) field-size * lshift ;
 : field> ( w -- w ) field-size * rshift ;
 
-0 constant prev-roll
-1 constant frame
-2 constant bonus
+2 constant frame
+1 constant track
+0 constant bonus
 
-: .! ( value,state,n -- state )
+: set ( value,state,n -- state )
     >r mask r@ >field -1 xor and swap r> >field or ;  
 
-: .@ ( state,n -- value )
+: get ( state,n -- value )
     field> mask and ;
 
 : initial ( -- state )
-    no-roll 0 prev-roll .!
-    0 swap bonus .! 
-    0 swap frame .! ;
+    no-roll 0 track set
+    0 swap bonus set 
+    0 swap frame set ;
 
 0 constant first
 1 constant second
@@ -77,7 +77,32 @@ no-roll all-down + constant strike-roll
 : start-game ( -- score,state )
     0 initial ;
 
+: >roll-score ( state,roll -- n )
+    swap dup frame get swap bonus get rot roll-score ;
+
+: >roll-bonus ( state,roll -- bonus )
+    >r 
+    dup frame get
+    swap dup bonus get
+    swap track get
+    r> roll-bonus ; 
+
+: >mark-track ( state,roll -- last )
+    swap track get swap mark-track ;
+
+: >new-frame ( state,track -- frame )
+    swap frame get
+    swap new-frame ;
 
 : add-roll ( score,state,roll -- score,state )
+    2dup >roll-score -rot ( score,n,state,roll )
+    2dup >roll-bonus -rot ( score,n,b,state,roll )
+    over swap >mark-track swap ( score,n,b,t,state )
+    2dup ( score,n,b,t,state,t,state )
+    swap >new-frame swap  ( score,n,b,t,f,state )
+    frame set            ( score,n,b,t,state )
+    track set            ( score,n,b,state )
+    bonus set            ( score,n,state )
+    -rot + swap ;       ( score,state )
    
-;
+
