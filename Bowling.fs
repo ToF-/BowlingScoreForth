@@ -76,10 +76,10 @@
     0 11 track set ;
 
 : add-roll          ( game,roll -- game )
-    swap over score+
-    over      bonus!
-    swap      track!
-              frame! ;  
+    tuck score+
+    over bonus!
+    swap track!
+         frame! ;  
 
 : show-game         ( game -- )
     ."  frame: "  dup frame get . 
