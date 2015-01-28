@@ -21,8 +21,10 @@
     frame get 10 / 1 swap - ;
 
 : score+            ( game,roll -- game )
-    over dup bonus-factor swap frame-factor + * 
-    over score get + score set ;
+    over dup bonus-factor 
+    swap frame-factor + * 
+    over score get    + 
+    score set ;
 
 : close-frame    ( roll -- track )
     drop 11 ;
@@ -57,11 +59,11 @@
         spare  = if      1 or then then ;
 
 : bonus!            ( game,roll -- game )
-    over next-bonus -rot
-    over roll-type 
+    over next-bonus 
+    -rot over roll-type 
     over frame-factor * 
-    rot swap
-    new-bonus bonus set ;
+    rot swap new-bonus 
+    bonus set ;
 
 : frame!            ( game -- game )
     dup  frame get
@@ -73,12 +75,10 @@
     0 11 track set ;
 
 : add-roll          ( game,roll -- game )
-    swap over       ( roll,game,roll )
-    score+          ( roll,game )
-    over            ( roll,game,roll )
-    bonus!          ( roll,game )
-    swap track!     ( game )
-    frame! ;        ( game )
+    swap over score+
+    over bonus!
+    swap track!
+    frame! ;  
 
 : show-game         ( game -- )
     ."  frame: "  dup frame get . 
