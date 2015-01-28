@@ -1,7 +1,6 @@
 \ Bowling.fs
 
 : clear -1 xor and ; ( w -- w )
-    
 
 : get               ( word,size,pos -- field )
     rot swap rshift swap and ;
@@ -80,3 +79,9 @@
     bonus!          ( roll,game )
     swap track!     ( game )
     frame! ;        ( game )
+
+: show-game         ( game -- )
+    ."  frame: "  dup frame get . 
+    ."  bonus: "  dup bonus get . 
+    ."  track: "  dup track get .
+    ."  score: "      score get . ;  
