@@ -45,6 +45,9 @@ start-game 10 frame set 10 add-roll bonus get assert( 0 = )
 
 cr ." a perfect game scores 300 "
 start-game 12 0 do 10 add-roll loop score get assert( 300 = )
+
+cr ." an average game add all rolls without bonus "
+start-game 20 0 do 1 add-roll loop score get assert( 20 = )
 ;
 
 
