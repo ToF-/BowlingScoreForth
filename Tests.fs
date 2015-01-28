@@ -3,6 +3,16 @@
 s" Bowling.fs" included
 
 : tests
+
+cr ." setting a field to zero "
+11 3 clear assert( 8 = ) 
+
+cr ." getting a field "
+11 3 2 get assert( 2 = )
+
+cr ." setting a field "
+11 3 3 2 set assert( 15 = )
+
 cr ." initial score should be zero "         
 start-game score get assert( 0= ) 
 

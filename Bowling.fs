@@ -2,28 +2,31 @@
 
 : clear -1 xor and ; ( w -- w )
 
-: get               ( word,size,pos -- field )
+: get               ( word,mask,pos -- field )
     rot swap rshift swap and ;
 
-: set               ( word,value,size,pos -- word )
+: set               ( word,value,mask,pos -- word )
     rot over lshift >r 
     lshift clear r> or ;
 
-: score 4095 0 ; ( -- size,pos )
-: track 15  12 ; ( -- size,pos )
-: bonus  7  16 ; ( -- size,pos )
-: frame 15  19 ; ( -- size,pos )
+: score 511  0 ; ( -- mask,pos )
+: track 15   9 ; ( -- mask,pos )
+: bonus  7  13 ; ( -- mask,pos )
+: frame 15  16 ; ( -- mask,pos )
 
 : bonus-factor      ( game -- factor )
     bonus get 3 and ;
 
 : frame-factor      ( game -- factor )
-    frame get 10 / 1 swap - ;
+    frame get 10 / negate 1+ ;
+
+: roll-score        ( roll,game -- score )
+    dup  bonus-factor 
+    swap frame-factor + * ;
 
 : score+            ( game,roll -- game )
-    over dup bonus-factor 
-    swap frame-factor + * 
-    over score get    + 
+    over roll-score 
+    over score get + 
     score set ;
 
 : close-frame    ( roll -- track )
@@ -34,8 +37,7 @@
 
 : track!            ( game,roll -- game )
     over track get  
-    11 = if track-1st-roll 
-    else    close-frame then
+    11 = if track-1st-roll else close-frame then
     track set ;  
 
 0 constant first 
@@ -47,9 +49,8 @@
     track get 
     + dup 21 = if drop strike else 
       dup 10 = if drop spare  else
-          10 < if second else
-                  first 
-    then then then ; 
+          10 < if      second else
+                       first  then then then ; 
 
 : next-bonus        ( game -- bonus )
     bonus get 2 rshift ; 
@@ -76,9 +77,9 @@
 
 : add-roll          ( game,roll -- game )
     swap over score+
-    over bonus!
-    swap track!
-    frame! ;  
+    over      bonus!
+    swap      track!
+              frame! ;  
 
 : show-game         ( game -- )
     ."  frame: "  dup frame get . 
