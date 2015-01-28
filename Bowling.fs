@@ -82,6 +82,7 @@
          frame! ;  
 
 : show-game         ( game -- )
+    cr
     ."  frame: "  dup frame get . 
     ."  bonus: "  dup bonus get . 
     ."  track: "  dup track get .
