@@ -1,7 +1,7 @@
 \ Bowling.fs
 
-: clear             ( w -- w )
-    -1 xor and ;
+: clear -1 xor and ; ( w -- w )
+    
 
 : get               ( word,size,pos -- field )
     rot swap rshift swap and ;
@@ -10,11 +10,8 @@
     rot over lshift >r 
     lshift clear r> or ;
 
-: score       ( -- size,pos )
-    4095 0 ;
-
-: track       ( -- size,pos )
-    15  12 ;
+: score 4095 0 ; ( -- size,pos )
+: track 15  12 ; ( -- size,pos )
 
 : score+            ( game,roll -- game )
     over score get + score set ;
